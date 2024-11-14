@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Chirp";
+  src: local("Chirp"), url(./assets/fonts/chirp-regular-web.woff) format("woff");
+}
+
+@font-face {
+  font-family: "Chirp-Bold";
+  src: local("Chirp"), url(./assets/fonts/chirp-heavy-web.woff) format("woff");
+}
+
+html {
+  font-family: "Chirp", Verdana, sans-serif;
+}

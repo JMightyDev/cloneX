@@ -26,157 +26,162 @@ const Profile = lazy(() => import("./pages/Profile"));
 const More = lazy(() => import("./pages/More"));
 
 export default function App() {
-  const router = createBrowserRouter([
+  const router = createBrowserRouter(
+    [
+      {
+        path: "/",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <MainLayout />
+          </Suspense>
+        ),
+        errorElement: <Error />,
+        children: [
+          {
+            index: true,
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ProtectedRoute>
+                  <Navigate to="/home" />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: "/home",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: "/explore",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ProtectedRoute>
+                  <Explore />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: "/notifications",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ProtectedRoute>
+                  <Notifications />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: "/messages",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ProtectedRoute>
+                  <Messages />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: "/lists",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ProtectedRoute>
+                  <Lists />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: "/bookmarks",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ProtectedRoute>
+                  <Bookmarks />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: "/jobs",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ProtectedRoute>
+                  <Jobs />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: "/communities",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ProtectedRoute>
+                  <Communities />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: "/premium",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ProtectedRoute>
+                  <Premium />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: "/verifiedOrgs",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ProtectedRoute>
+                  <VerifiedOrgs />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: "/:displayName",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+          {
+            path: "/more",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <ProtectedRoute>
+                  <More />
+                </ProtectedRoute>
+              </Suspense>
+            ),
+          },
+        ],
+      },
+      {
+        path: "/login",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Login />
+          </Suspense>
+        ),
+      },
+    ],
     {
-      path: "/",
-      element: (
-        <Suspense fallback={<Loading />}>
-          <MainLayout />
-        </Suspense>
-      ),
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: (
-            <Suspense fallback={<Loading />}>
-              <ProtectedRoute>
-                <Navigate to="/home" />
-              </ProtectedRoute>
-            </Suspense>
-          ),
-        },
-        {
-          path: "/home",
-          element: (
-            <Suspense fallback={<Loading />}>
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            </Suspense>
-          ),
-        },
-        {
-          path: "/explore",
-          element: (
-            <Suspense fallback={<Loading />}>
-              <ProtectedRoute>
-                <Explore />
-              </ProtectedRoute>
-            </Suspense>
-          ),
-        },
-        {
-          path: "/notifications",
-          element: (
-            <Suspense fallback={<Loading />}>
-              <ProtectedRoute>
-                <Notifications />
-              </ProtectedRoute>
-            </Suspense>
-          ),
-        },
-        {
-          path: "/messages",
-          element: (
-            <Suspense fallback={<Loading />}>
-              <ProtectedRoute>
-                <Messages />
-              </ProtectedRoute>
-            </Suspense>
-          ),
-        },
-        {
-          path: "/lists",
-          element: (
-            <Suspense fallback={<Loading />}>
-              <ProtectedRoute>
-                <Lists />
-              </ProtectedRoute>
-            </Suspense>
-          ),
-        },
-        {
-          path: "/bookmarks",
-          element: (
-            <Suspense fallback={<Loading />}>
-              <ProtectedRoute>
-                <Bookmarks />
-              </ProtectedRoute>
-            </Suspense>
-          ),
-        },
-        {
-          path: "/jobs",
-          element: (
-            <Suspense fallback={<Loading />}>
-              <ProtectedRoute>
-                <Jobs />
-              </ProtectedRoute>
-            </Suspense>
-          ),
-        },
-        {
-          path: "/communities",
-          element: (
-            <Suspense fallback={<Loading />}>
-              <ProtectedRoute>
-                <Communities />
-              </ProtectedRoute>
-            </Suspense>
-          ),
-        },
-        {
-          path: "/premium",
-          element: (
-            <Suspense fallback={<Loading />}>
-              <ProtectedRoute>
-                <Premium />
-              </ProtectedRoute>
-            </Suspense>
-          ),
-        },
-        {
-          path: "/verifiedOrgs",
-          element: (
-            <Suspense fallback={<Loading />}>
-              <ProtectedRoute>
-                <VerifiedOrgs />
-              </ProtectedRoute>
-            </Suspense>
-          ),
-        },
-        {
-          path: "/:displayName",
-          element: (
-            <Suspense fallback={<Loading />}>
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            </Suspense>
-          ),
-        },
-        {
-          path: "/more",
-          element: (
-            <Suspense fallback={<Loading />}>
-              <ProtectedRoute>
-                <More />
-              </ProtectedRoute>
-            </Suspense>
-          ),
-        },
-      ],
-    },
-    {
-      path: "/login",
-      element: (
-        <Suspense fallback={<Loading />}>
-          <Login />
-        </Suspense>
-      ),
-    },
-  ]);
+      basename: "/x",
+    }
+  );
 
   return (
     <>

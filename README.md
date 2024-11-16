@@ -4,4 +4,4 @@ Ceci est un clone de X (anciennement Twitter), créé à partir de 0 dans le cad
 
 Pour tester ce projet, il faudra créer le fichier .env sur la base du fichier .env.exemple présent sur ce repository.
 
-Disponible sur : [https://jmighty.fr/x/](https://jmighty.fr/x/)
+Démo sur : [https://jmighty.fr/x/](https://jmighty.fr/x/)

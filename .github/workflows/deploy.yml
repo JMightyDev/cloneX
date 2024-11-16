@@ -7,7 +7,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: Hostinger
+    environment: Hostinger # Vérifie que c'est bien dans cet environnement que vous avez mis les secrets
     steps:
       - name: Get latest code
         uses: actions/checkout@v3
@@ -30,11 +30,10 @@ jobs:
           VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
           VITE_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
         run: |
-          echo "Checking environment variables..."
-          if [ -z "$VITE_FIREBASE_API_KEY" ]; then
-            echo "Error: Firebase API Key is missing"
-            exit 1
-          fi
+          # Vérification des variables Firebase
+          echo "🔍 Vérification des variables Firebase..."
+          [ -z "$VITE_FIREBASE_API_KEY" ] && echo "❌ FIREBASE_API_KEY manquante" && exit 1
+          echo "✅ Variables Firebase OK"
           npm run build
 
       - name: 📂 Sync files

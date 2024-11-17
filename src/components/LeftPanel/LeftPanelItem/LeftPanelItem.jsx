@@ -5,7 +5,7 @@ export default function LeftPanelItem({ isActive, linkTo, SolidIcon, OutlineIcon
   return (
     <li className="flex items-center space-x-2">
       <NavLink to={linkTo} className="flex w-full group items-center space-x-2">
-        <div className="group-hover:bg-slate-700 flex rounded-full p-2 pr-7">
+        <div className="group-hover:bg-slate-700 flex rounded-full p-2 pr-7 transition-all duration-200 transform group-hover:translate-x-1 group-hover:opacity-90">
           {isActive ? <SolidIcon className="size-6" /> : <OutlineIcon className="size-6" />}
           <span className={`ml-4 text-xl hidden xl:inline ${isActive ? "font-bold" : ""}`}>
             {text}

@@ -1,4 +1,4 @@
-import { useRouteError } from "react-router-dom";
+import { useRouteError, Link } from "react-router-dom";
 import LogoX from "../components/LogoX/LogoX";
 
 export default function Error() {
@@ -13,11 +13,11 @@ export default function Error() {
       <p>
         <span>Erreur :</span> {error.error ? error.error.message : error.message}
       </p>
-      <a
-        href="/"
+      <Link
+        to="/"
         className="inline-block mx-auto uppercase px-10 py-4 text-white font-semibold text-xl mt-5 hover:bg-slate-700 rounded-full p-2">
         Retour à l&apos;accueil
-      </a>
+      </Link>
     </div>
   );
 }

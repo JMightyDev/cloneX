@@ -207,27 +207,29 @@ export default function Profile() {
             alt="avatar"
             className="w-32 h-32 rounded-full"
           />
-          <div>
-            <h1 className="text-2xl font-bold">{displayName}</h1>
-            <div className="flex gap-2">
-              {user && user.displayName === displayName ? (
-                <button
-                  onClick={handleLogout}
-                  className="mt-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full">
-                  Se déconnecter
-                </button>
-              ) : (
-                <button
-                  onClick={handleSubscription}
-                  disabled={subscriptionLoading}
-                  className={`mt-2 px-4 py-2 ${
-                    isSubscribed
-                      ? "bg-white text-black hover:bg-gray-200"
-                      : "bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white"
-                  } rounded-full font-bold`}>
-                  {subscriptionLoading ? "..." : isSubscribed ? "Abonné" : "S'abonner"}
-                </button>
-              )}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold">{displayName}</h1>
+              <div className="flex gap-2">
+                {user && user.displayName === displayName ? (
+                  <button
+                    onClick={handleLogout}
+                    className="mt-2 px-4 py-2 bg-transparent hover:bg-slate-800 text-white rounded-full font-bold border border-slate-700 transition-colors duration-200">
+                    Se déconnecter
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleSubscription}
+                    disabled={subscriptionLoading}
+                    className={`mt-2 px-4 py-2 ${
+                      isSubscribed
+                        ? "bg-transparent text-white hover:bg-slate-800 border border-slate-700"
+                        : "bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white"
+                    } rounded-full font-bold transition-colors duration-200`}>
+                    {subscriptionLoading ? "..." : isSubscribed ? "Abonné" : "S'abonner"}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>

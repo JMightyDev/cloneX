@@ -29,12 +29,25 @@ import { AuthContext } from "../../store/authContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 
+const ESSENTIAL_ITEMS = ["Accueil", "Explorer", "Notifications", "Messages", "Profil"];
+
 export default function LeftPanel() {
   const queryClient = useQueryClient();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const actualPath = useLocation().pathname;
   const refTextArea = useRef("");
   const { user } = useContext(AuthContext);
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+
+  // Ajouter un useEffect pour gérer le redimensionnement de la fenêtre
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowHeight(window.innerHeight);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Définir les éléments de navigation mobile
   const mobileNavItems = [
@@ -179,6 +192,13 @@ export default function LeftPanel() {
     }
   }, [modalIsOpen]);
 
+  // Ajouter cette fonction pour filtrer les éléments essentiels
+  const filterEssentialItems = (items) => {
+    return items.filter(
+      (item) => ESSENTIAL_ITEMS.includes(item.text) || (item.text === "Plus" && windowHeight < 800)
+    );
+  };
+
   return (
     <>
       {/* Navigation desktop */}
@@ -187,7 +207,7 @@ export default function LeftPanel() {
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.3 }}
         className="hidden lg:flex h-screen basis-1/4 justify-end">
-        <div className="fixed h-screen border-r border-slate-700">
+        <div className="fixed h-screen border-r border-slate-700 overflow-y-auto scrollbar-hide">
           <div className="p-4 text-white">
             <motion.ul
               initial={{ opacity: 0 }}
@@ -201,21 +221,23 @@ export default function LeftPanel() {
                   <LogoX width="w-8" />
                 </NavLink>
               </li>
-              {desktopNavItems.map((item, index) => (
-                <motion.div
-                  key={item.to}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}>
-                  <LeftPanelItem
-                    isActive={actualPath === item.to}
-                    linkTo={item.to}
-                    SolidIcon={item.Icon}
-                    OutlineIcon={item.OutIcon}
-                    text={item.text}
-                  />
-                </motion.div>
-              ))}
+              {(windowHeight < 800 ? filterEssentialItems(desktopNavItems) : desktopNavItems).map(
+                (item, index) => (
+                  <motion.div
+                    key={item.to}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}>
+                    <LeftPanelItem
+                      isActive={actualPath === item.to}
+                      linkTo={item.to}
+                      SolidIcon={item.Icon}
+                      OutlineIcon={item.OutIcon}
+                      text={item.text}
+                    />
+                  </motion.div>
+                )
+              )}
             </motion.ul>
 
             <motion.button

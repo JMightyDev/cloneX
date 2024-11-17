@@ -1,7 +1,7 @@
 import { Link, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useContext, useRef, useState } from "react";
+import { useContext, useRef, useState, useEffect } from "react"; // Ajoutez useEffect
 import { AuthContext } from "../store/authContext";
 import LogoX from "../components/LogoX/LogoX";
 import { getAuth, updateProfile } from "firebase/auth";
@@ -32,6 +32,35 @@ export default function Login() {
     handleSubmit: handleSubmitLogin,
     formState: { errors: errorsLogin },
   } = useForm();
+
+  // Déplacer les deux useEffect ici, avant les conditions de retour
+  useEffect(() => {
+    if (loginPopup) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [loginPopup]);
+
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setLoginPopup(false);
+      }
+    };
+
+    if (loginPopup) {
+      document.addEventListener("keydown", handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [loginPopup]);
 
   if (loading) {
     return <Loading />;
@@ -107,20 +136,20 @@ export default function Login() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="flex items-center pt-20 flex-wrap justify-evenly h-screen">
+        className="flex items-center pt-5 md:pt-20 flex-wrap justify-evenly h-screen">
         <motion.div
           initial={{ scale: 0.8 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="flex items-center">
-          <LogoX width="w-36 sm:w-48 md:w-64 lg:w-96" />
+          className="flex items-center w-full justify-center md:w-auto md:justify-normal">
+          <LogoX width="w-20 sm:w-36 md:w-64 lg:w-96" />
         </motion.div>
         <div className="flex items-center">
           <div className="flex flex-col items-center space-y-3 w-full">
             <motion.span
               initial={{ y: -20 }}
               animate={{ y: 0 }}
-              className="text-[64px] font-chirpbold leading-tight text-center max-w-[450px]">
+              className="text-4xl md:text-[64px] font-chirpbold leading-tight text-center max-w-[450px]">
               Ça se passe maintenant
             </motion.span>
             <motion.h2
@@ -320,14 +349,15 @@ export default function Login() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: "spring", bounce: 0.3 }}
-              className="fixed inset-0 flex justify-center items-center"
+              className="fixed inset-0 flex md:justify-center md:items-center"
               onClick={(e) => e.stopPropagation()}>
               <motion.div
-                className="bg-[#15202B] p-8 rounded-lg w-96"
-                initial={{ y: -50 }}
+                className="bg-[#15202B] p-4 md:p-8 rounded-lg md:rounded-2xl w-full md:w-auto md:max-w-md mx-auto mt-0 md:mt-auto"
+                initial={{ y: -100 }}
                 animate={{ y: 0 }}
+                exit={{ y: -100 }}
                 transition={{ type: "spring", damping: 20 }}>
-                <div className="text-center mb-5">
+                <div className="text-center mb-8">
                   <motion.div
                     animate={{
                       scale: [1, 1.2, 1],
@@ -340,7 +370,7 @@ export default function Login() {
                 </div>
                 <form
                   onSubmit={handleSubmitLogin(onLoginSubmit)}
-                  className="flex flex-col space-y-4 w-80 text-black">
+                  className="flex flex-col space-y-5 w-full max-w-sm mx-auto">
                   <motion.input
                     whileFocus={{ scale: 1.02 }}
                     transition={{ type: "spring", stiffness: 300 }}
@@ -348,9 +378,9 @@ export default function Login() {
                     placeholder="Adresse email"
                     autoFocus
                     ref={emailLoginRef}
-                    className={`p-3 bg-slate-100 border ${
+                    className={`p-4 md:p-3 bg-slate-100 border ${
                       errorsLogin.emailLogin ? "border-red-500" : "border-none"
-                    } rounded h-10`}
+                    } rounded-lg h-12 md:h-10 text-base w-full`}
                     {...registerLogin("emailLogin", {
                       required: "L'adresse email est requise",
                       pattern: {
@@ -373,9 +403,9 @@ export default function Login() {
                     type="password"
                     placeholder="Mot de passe"
                     ref={passwordLoginRef}
-                    className={`p-3 bg-slate-100 border ${
+                    className={`p-4 md:p-3 bg-slate-100 border ${
                       errorsLogin.passwordLogin ? "border-red-500" : "border-none"
-                    } rounded h-10`}
+                    } rounded-lg h-12 md:h-10 text-base w-full`}
                     {...registerLogin("passwordLogin", {
                       required: "Le mot de passe est requis",
                       minLength: {
@@ -396,7 +426,7 @@ export default function Login() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     type="submit"
-                    className="p-2 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white rounded-full font-bold">
+                    className="p-4 md:p-2 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white rounded-full font-bold text-lg w-full">
                     Se connecter
                   </motion.button>
                   <motion.button
@@ -404,7 +434,7 @@ export default function Login() {
                     whileTap={{ scale: 0.95 }}
                     type="button"
                     onClick={() => setLoginPopup(false)}
-                    className="p-2 bg-[#EFF3F4] hover:bg-[#D7DBDC] text-[#0F1419] rounded-full font-bold block text-center w-80 mt-4">
+                    className="p-4 md:p-2 bg-[#EFF3F4] hover:bg-[#D7DBDC] text-[#0F1419] rounded-full font-bold text-lg w-full">
                     Annuler
                   </motion.button>
                 </form>

@@ -108,15 +108,19 @@ export default function Login() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="flex items-center pt-20 flex-wrap justify-evenly h-screen">
-        <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ duration: 0.5 }}>
+        <motion.div
+          initial={{ scale: 0.8 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="flex items-center">
           <LogoX width="w-36 sm:w-48 md:w-64 lg:w-96" />
         </motion.div>
         <div className="flex items-center">
-          <div className="flex flex-col items-center space-y-3 w-[450px]">
+          <div className="flex flex-col items-center space-y-3 w-full">
             <motion.span
               initial={{ y: -20 }}
               animate={{ y: 0 }}
-              className="text-[64px] font-chirpbold leading-tight text-center">
+              className="text-[64px] font-chirpbold leading-tight text-center max-w-[450px]">
               Ça se passe maintenant
             </motion.span>
             <motion.h2
@@ -135,18 +139,18 @@ export default function Login() {
                 type="text"
                 placeholder="Pseudo"
                 autoFocus
-                className={`p-3 border border-gray-300 rounded h-10 ${
-                  errors.displayName ? "outline-red-400" : ""
-                }`}
+                className={`p-3 border ${
+                  errors.displayName ? "border-red-500" : "border-gray-300"
+                } rounded h-10`}
                 {...register("displayName", {
                   required: "Le pseudo est requis",
                   minLength: {
                     value: 3,
-                    message: "Le pseudo doit contenir au moins 3 caractères.",
+                    message: "Le pseudo doit contenir au moins 3 caractères",
                   },
                   maxLength: {
                     value: 50,
-                    message: "Le pseudo doit contenir au maximum 50 caractères.",
+                    message: "Le pseudo doit contenir au maximum 50 caractères",
                   },
                   pattern: {
                     value: /^[a-zA-Z0-9_]+$/,
@@ -155,44 +159,70 @@ export default function Login() {
                 })}
               />
               {errors.displayName && (
-                <span className="text-red-500 text-xs">{errors.displayName.message}</span>
+                <motion.p
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-red-500 text-sm mt-1">
+                  {errors.displayName.message}
+                </motion.p>
               )}
               <motion.input
                 whileFocus={{ scale: 1.02 }}
                 transition={{ type: "spring", stiffness: 300 }}
                 type="email"
                 placeholder="Adresse email"
-                className={`p-3 border border-gray-300 rounded h-10 ${
-                  errors.email ? "outline-red-400" : ""
-                }`}
+                className={`p-3 border ${
+                  errors.email ? "border-red-500" : "border-gray-300"
+                } rounded h-10`}
                 {...register("email", {
-                  required: true,
+                  required: "L'adresse email est requise",
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                    message: "Veuillez entrer une adresse e-mail valide.",
+                    message: "Veuillez entrer une adresse email valide",
                   },
                 })}
               />
+              {errors.email && (
+                <motion.p
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-red-500 text-sm mt-1">
+                  {errors.email.message}
+                </motion.p>
+              )}
               <motion.input
                 whileFocus={{ scale: 1.02 }}
                 transition={{ type: "spring", stiffness: 300 }}
                 type="password"
                 placeholder="Mot de passe"
-                className={`p-3 border border-gray-300 rounded h-10 ${
-                  errors.password ? "outline-red-400" : ""
-                }`}
+                className={`p-3 border ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                } rounded h-10`}
                 {...register("password", {
-                  required: true,
+                  required: "Le mot de passe est requis",
                   minLength: {
                     value: 8,
-                    message: "Le mot de passe doit contenir au moins 8 caractères.",
+                    message: "Le mot de passe doit contenir au moins 8 caractères",
                   },
                   maxLength: {
                     value: 50,
-                    message: "Le mot de passe doit contenir au maximum 50 caractères.",
+                    message: "Le mot de passe doit contenir au maximum 50 caractères",
+                  },
+                  pattern: {
+                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+                    message:
+                      "Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre",
                   },
                 })}
               />
+              {errors.password && (
+                <motion.p
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-red-500 text-sm mt-1">
+                  {errors.password.message}
+                </motion.p>
+              )}
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -318,38 +348,50 @@ export default function Login() {
                     placeholder="Adresse email"
                     autoFocus
                     ref={emailLoginRef}
-                    className={`p-3 bg-slate-100 border-none rounded h-10 ${
-                      errorsLogin.emailLogin ? "outline-red-400" : ""
-                    }`}
+                    className={`p-3 bg-slate-100 border ${
+                      errorsLogin.emailLogin ? "border-red-500" : "border-none"
+                    } rounded h-10`}
                     {...registerLogin("emailLogin", {
-                      required: true,
+                      required: "L'adresse email est requise",
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                        message: "Veuillez entrer une adresse e-mail valide.",
+                        message: "Veuillez entrer une adresse email valide",
                       },
                     })}
                   />
+                  {errorsLogin.emailLogin && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-red-500 text-sm mt-1">
+                      {errorsLogin.emailLogin.message}
+                    </motion.p>
+                  )}
                   <motion.input
                     whileFocus={{ scale: 1.02 }}
                     transition={{ type: "spring", stiffness: 300 }}
                     type="password"
                     placeholder="Mot de passe"
                     ref={passwordLoginRef}
-                    className={`p-3 border border-gray-300 rounded h-10 ${
-                      errorsLogin.passwordLogin ? "outline-red-400" : ""
-                    }`}
+                    className={`p-3 bg-slate-100 border ${
+                      errorsLogin.passwordLogin ? "border-red-500" : "border-none"
+                    } rounded h-10`}
                     {...registerLogin("passwordLogin", {
-                      required: true,
+                      required: "Le mot de passe est requis",
                       minLength: {
                         value: 8,
-                        message: "Le mot de passe doit contenir au moins 8 caractères.",
-                      },
-                      maxLength: {
-                        value: 50,
-                        message: "Le mot de passe doit contenir au maximum 50 caractères.",
+                        message: "Le mot de passe doit contenir au moins 8 caractères",
                       },
                     })}
                   />
+                  {errorsLogin.passwordLogin && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-red-500 text-sm mt-1">
+                      {errorsLogin.passwordLogin.message}
+                    </motion.p>
+                  )}
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}

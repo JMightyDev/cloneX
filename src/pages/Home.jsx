@@ -9,7 +9,7 @@ import { ChatBubbleLeftIcon } from "@heroicons/react/24/outline";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
-  const { user, loading } = useContext(AuthContext);
+  const { user, loading, auth } = useContext(AuthContext);
   const { searchQuery } = useContext(SearchContext);
   const queryClient = useQueryClient();
   const [isMySubscriptions, setIsMySubscriptions] = useState(false);
@@ -21,32 +21,44 @@ export default function Home() {
 
   useEffect(() => {
     const fetchSubscriptions = async () => {
-      if (!user) return;
+      if (!user || !auth.currentUser) return;
       try {
-        const response = await fetch(
-          `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/subscriptions/${user.uid}.json`
-        );
-        const data = await response.json();
-        if (data) {
-          setSubscriptions(Object.values(data));
+        const token = await auth.currentUser.getIdToken(true);
+
+        if (!token) {
+          throw new Error("Pas de token d'authentification");
         }
+
+        const response = await fetch(
+          `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/subscriptions/${auth.currentUser.uid}.json?auth=${token}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setSubscriptions(data ? Object.values(data) : []);
       } catch (error) {
-        toast.error("Erreur lors du chargement des abonnements : " + error.message);
+        console.error("Erreur lors du chargement des abonnements:", error);
+        setSubscriptions([]);
       }
     };
 
-    fetchSubscriptions();
-  }, [user]);
+    if (user && auth.currentUser) {
+      fetchSubscriptions();
+    }
+  }, [user, auth.currentUser]);
 
   const fetchTweets = async () => {
+    // Plus besoin de token pour les tweets car .read est public
     const tweetsResponse = await fetch(
-      `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/tweets.json`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/tweets.json`
     );
     const tweets = await tweetsResponse.json();
     if (!tweets) {
@@ -103,33 +115,46 @@ export default function Home() {
   };
 
   const postNewTweet = async () => {
-    const newTweet = {
-      content: refTextArea.current.value,
-      date: new Date().toISOString(),
-      userId: user.uid,
-      displayName: user.displayName,
-    };
-
-    const response = await fetch(
-      "https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/tweets.json",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newTweet),
+    try {
+      // S'assurer que l'utilisateur est connecté
+      if (!user) {
+        toast.error("Vous devez être connecté pour poster");
+        return;
       }
-    );
 
-    if (response.ok) {
+      const newTweet = {
+        content: refTextArea.current.value,
+        date: new Date().toISOString(),
+        userId: user.uid,
+        displayName: user.displayName,
+      };
+
+      // Utiliser auth.currentUser.getIdToken() au lieu de user.getIdToken()
+      const token = await auth.currentUser.getIdToken(true);
+
+      const response = await fetch(
+        `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/tweets.json?auth=${token}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newTweet),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       refTextArea.current.value = "";
-      // Invalidate and refetch
       await queryClient.invalidateQueries(["tweets"]);
       toast.success("Message publié !", {
         autoClose: 2000,
       });
-    } else {
-      toast.error("Une erreur est survenue...", {
+    } catch (error) {
+      console.error("Erreur lors du post:", error);
+      toast.error("Une erreur est survenue lors de la publication", {
         autoClose: 2000,
       });
     }
@@ -137,21 +162,22 @@ export default function Home() {
 
   const handleDeleteTweet = async (tweetId) => {
     try {
+      const token = await auth.currentUser.getIdToken(true);
       const response = await fetch(
-        `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/tweets/${tweetId}.json`,
+        `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/tweets/${tweetId}.json?auth=${token}`,
         {
           method: "DELETE",
         }
       );
 
-      if (response.ok) {
-        await queryClient.invalidateQueries(["tweets"]);
-        toast.success("Tweet supprimé !", {
-          autoClose: 2000,
-        });
-      } else {
+      if (!response.ok) {
         throw new Error("Erreur lors de la suppression");
       }
+
+      await queryClient.invalidateQueries(["tweets"]);
+      toast.success("Tweet supprimé !", {
+        autoClose: 2000,
+      });
     } catch (error) {
       toast.error("Erreur lors de la suppression du tweet : " + error.message, {
         autoClose: 2000,
@@ -179,8 +205,9 @@ export default function Home() {
     };
 
     try {
+      const token = await auth.currentUser.getIdToken(true);
       const response = await fetch(
-        "https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/tweets.json",
+        `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/tweets.json?auth=${token}`,
         {
           method: "POST",
           headers: {
@@ -190,14 +217,16 @@ export default function Home() {
         }
       );
 
-      if (response.ok) {
-        await queryClient.invalidateQueries(["tweets"]);
-        setReplyToTweet(null);
-        replyTextRef.current.value = "";
-        toast.success("Réponse publiée !", {
-          autoClose: 2000,
-        });
+      if (!response.ok) {
+        throw new Error("Erreur lors de la publication de la réponse");
       }
+
+      await queryClient.invalidateQueries(["tweets"]);
+      setReplyToTweet(null);
+      replyTextRef.current.value = "";
+      toast.success("Réponse publiée !", {
+        autoClose: 2000,
+      });
     } catch (error) {
       toast.error("Erreur lors de la publication de la réponse : " + error.message, {
         autoClose: 2000,
@@ -296,7 +325,10 @@ export default function Home() {
                 />
                 <div className="flex justify-end border-t border-slate-700 border-collapse">
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{
+                      backgroundColor: "rgba(255, 255, 255, 0.03)",
+                      transition: { duration: 0.1 },
+                    }}
                     whileTap={{ scale: 0.95 }}
                     type="submit"
                     className="px-4 py-2 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white rounded-full font-bold mt-3">
@@ -393,7 +425,11 @@ export default function Home() {
 
               {/* Réponses au tweet */}
               {getTweetReplies(selectedTweet.id)?.map((reply) => (
-                <div key={reply.id} className="p-4 border-b border-slate-700 hover:bg-slate-800">
+                <div
+                  key={reply.id}
+                  className="p-4 border-b border-slate-700 hover:bg-slate-800"
+                  onMouseEnter={() => setSelectedTweetForDeletion(reply.id)}
+                  onMouseLeave={() => setSelectedTweetForDeletion(null)}>
                   <div className="flex items-start gap-3">
                     <NavLink to={`/${reply.displayName}`}>
                       <img
@@ -403,11 +439,25 @@ export default function Home() {
                       />
                     </NavLink>
                     <div className="w-full">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold">{reply.displayName}</span>
-                        <span className="text-gray-500 text-sm">
-                          {new Date(reply.date).toLocaleDateString()}
-                        </span>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold">{reply.displayName}</span>
+                          <span className="text-gray-500 text-sm">
+                            {new Date(reply.date).toLocaleDateString()}
+                          </span>
+                        </div>
+                        {user &&
+                          user.uid === reply.userId &&
+                          selectedTweetForDeletion === reply.id && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteTweet(reply.id);
+                              }}
+                              className="text-red-500 hover:text-red-700 text-sm">
+                              Supprimer
+                            </button>
+                          )}
                       </div>
                       <p className="mt-2">{reply.content}</p>
                     </div>
@@ -428,7 +478,6 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                   whileHover={{
-                    scale: 1.01,
                     backgroundColor: "rgba(255, 255, 255, 0.03)",
                     transition: { duration: 0.1 },
                   }}
@@ -437,7 +486,7 @@ export default function Home() {
                   onClick={() => setSelectedTweet(tweet)}
                   onMouseEnter={() => setSelectedTweetForDeletion(tweet.id)}
                   onMouseLeave={() => setSelectedTweetForDeletion(null)}>
-                  <div>
+                  <div className="shrink-0">
                     <NavLink to={`/${tweet.displayName}`} className="w-12 h-12 rounded-full">
                       <img
                         src={`https://i.pravatar.cc/150?u=${tweet.displayName}`}

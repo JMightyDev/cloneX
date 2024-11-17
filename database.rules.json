@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "tweets": {
+      ".read": true,
+      ".write": "auth != null",
+      "$tweetId": {
+        ".write": "auth != null && (!data.exists() || data.child('userId').val() === auth.uid)"
+      }
+    },
+    "subscriptions": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    }
+  }
+}

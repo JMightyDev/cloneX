@@ -6,10 +6,11 @@ import { AuthContext } from "../store/authContext";
 import { toast } from "react-toastify";
 import Loading from "../components/Loading/Loading";
 import { motion, AnimatePresence } from "framer-motion";
+import { useQueryClient } from "@tanstack/react-query"; // Ajoutez cette ligne
 
 export default function Profile() {
   const { displayName } = useParams();
-  const { user, logOut } = useContext(AuthContext);
+  const { user, logOut, auth } = useContext(AuthContext);
   const [userTweets, setUserTweets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -18,6 +19,7 @@ export default function Profile() {
   const [selectedTweetForDeletion, setSelectedTweetForDeletion] = useState(null);
   const replyTextRef = useRef("");
   const [selectedTweet, setSelectedTweet] = useState(null);
+  const queryClient = useQueryClient(); // Ajoutez cette ligne
 
   const getReplyCount = (tweetId) => {
     const replies = userTweets.filter((tweet) => tweet.replyTo === tweetId);
@@ -33,10 +35,12 @@ export default function Profile() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const token = await auth.currentUser.getIdToken(true);
+
         // Vérifier si l'utilisateur est déjà abonné
         if (user && user.displayName !== displayName) {
           const subResponse = await fetch(
-            `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/subscriptions/${user.uid}.json`
+            `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/subscriptions/${user.uid}.json?auth=${token}`
           );
           const subscriptions = await subResponse.json();
           setIsSubscribed(subscriptions && Object.values(subscriptions).includes(displayName));
@@ -45,7 +49,7 @@ export default function Profile() {
 
         // Récupérer les tweets de l'utilisateur
         const response = await fetch(
-          `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/tweets.json`
+          `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/tweets.json?auth=${token}`
         );
         const allTweets = await response.json();
         if (allTweets) {
@@ -65,7 +69,7 @@ export default function Profile() {
     };
 
     fetchData();
-  }, [displayName, user]);
+  }, [displayName, user, auth]);
 
   const handleLogout = async () => {
     try {
@@ -81,10 +85,11 @@ export default function Profile() {
 
     setSubscriptionLoading(true);
     try {
+      const token = await auth.currentUser.getIdToken(true);
       if (isSubscribed) {
         // Se désabonner
         const response = await fetch(
-          `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/subscriptions/${user.uid}.json`
+          `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/subscriptions/${user.uid}.json?auth=${token}`
         );
         const subscriptions = await response.json();
         const subToDelete = Object.keys(subscriptions).find(
@@ -92,19 +97,28 @@ export default function Profile() {
         );
 
         await fetch(
-          `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/subscriptions/${user.uid}/${subToDelete}.json`,
-          { method: "DELETE" }
+          `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/subscriptions/${user.uid}/${subToDelete}.json?auth=${token}`,
+          {
+            method: "DELETE",
+          }
         );
         toast.success(`Vous n'êtes plus abonné à ${displayName}`);
       } else {
         // S'abonner
-        await fetch(
-          `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/subscriptions/${user.uid}.json`,
+        const response = await fetch(
+          `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/subscriptions/${user.uid}.json?auth=${token}`,
           {
             method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
             body: JSON.stringify(displayName),
           }
         );
+
+        if (!response.ok) {
+          throw new Error("Failed to subscribe");
+        }
         toast.success(`Vous êtes maintenant abonné à ${displayName}`);
       }
       setIsSubscribed(!isSubscribed);
@@ -117,9 +131,12 @@ export default function Profile() {
 
   const handleDeleteTweet = async (tweetId) => {
     try {
+      const token = await auth.currentUser.getIdToken(true);
       const response = await fetch(
-        `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/tweets/${tweetId}.json`,
-        { method: "DELETE" }
+        `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/tweets/${tweetId}.json?auth=${token}`,
+        {
+          method: "DELETE",
+        }
       );
 
       if (response.ok) {
@@ -149,18 +166,26 @@ export default function Profile() {
     };
 
     try {
+      const token = await auth.currentUser.getIdToken(true);
       const response = await fetch(
-        "https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/tweets.json",
+        `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/tweets.json?auth=${token}`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(reply),
         }
       );
 
       if (response.ok) {
+        const data = await response.json();
+        // Mettre à jour les tweets localement
+        setUserTweets((prevTweets) => [...prevTweets, { id: data.name, ...reply }]);
         setReplyToTweet(null);
         replyTextRef.current.value = "";
+        // Invalider le cache des tweets
+        await queryClient.invalidateQueries(["tweets"]);
         toast.success("Réponse publiée !");
       }
     } catch (error) {
@@ -236,11 +261,13 @@ export default function Profile() {
               {/* Tweet principal */}
               <div className="p-4 border-b border-slate-700">
                 <div className="flex items-start gap-3">
-                  <img
-                    src={`https://i.pravatar.cc/150?u=${selectedTweet.displayName}`}
-                    alt="avatar"
-                    className="w-12 h-12 rounded-full"
-                  />
+                  <div className="shrink-0">
+                    <img
+                      src={`https://i.pravatar.cc/150?u=${selectedTweet.displayName}`}
+                      alt="avatar"
+                      className="w-12 h-12 rounded-full"
+                    />
+                  </div>
                   <div className="w-full">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
@@ -272,11 +299,13 @@ export default function Profile() {
                   <form
                     onSubmit={(e) => handleReply(e, selectedTweet.id)}
                     className="flex items-start gap-3">
-                    <img
-                      src={`https://i.pravatar.cc/150?u=${user.displayName}`}
-                      alt="avatar"
-                      className="w-12 h-12 rounded-full"
-                    />
+                    <div className="shrink-0">
+                      <img
+                        src={`https://i.pravatar.cc/150?u=${user.displayName}`}
+                        alt="avatar"
+                        className="w-12 h-12 rounded-full"
+                      />
+                    </div>
                     <div className="w-full">
                       <textarea
                         ref={replyTextRef}
@@ -304,17 +333,20 @@ export default function Profile() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                   whileHover={{
-                    scale: 1.01,
                     backgroundColor: "rgba(255, 255, 255, 0.03)",
                     transition: { duration: 0.1 },
                   }}
+                  onMouseEnter={() => setSelectedTweetForDeletion(reply.id)}
+                  onMouseLeave={() => setSelectedTweetForDeletion(null)}
                   className="p-4 border-b border-slate-700 cursor-pointer">
                   <div className="flex items-start gap-3">
-                    <img
-                      src={`https://i.pravatar.cc/150?u=${reply.displayName}`}
-                      alt="avatar"
-                      className="w-12 h-12 rounded-full"
-                    />
+                    <div className="shrink-0">
+                      <img
+                        src={`https://i.pravatar.cc/150?u=${reply.displayName}`}
+                        alt="avatar"
+                        className="w-12 h-12 rounded-full"
+                      />
+                    </div>
                     <div className="w-full">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -323,16 +355,18 @@ export default function Profile() {
                             {new Date(reply.date).toLocaleDateString()}
                           </span>
                         </div>
-                        {user && user.uid === reply.userId && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteTweet(reply.id);
-                            }}
-                            className="text-red-500 hover:text-red-700 text-sm">
-                            Supprimer
-                          </button>
-                        )}
+                        {user &&
+                          (user.uid === reply.userId || user.displayName === displayName) &&
+                          selectedTweetForDeletion === reply.id && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteTweet(reply.id);
+                              }}
+                              className="text-red-500 hover:text-red-700 text-sm">
+                              Supprimer
+                            </button>
+                          )}
                       </div>
                       <p className="mt-2">{reply.content}</p>
                     </div>
@@ -353,7 +387,6 @@ export default function Profile() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                   whileHover={{
-                    scale: 1.01,
                     backgroundColor: "rgba(255, 255, 255, 0.03)",
                     transition: { duration: 0.1 },
                   }}
@@ -362,11 +395,13 @@ export default function Profile() {
                   onMouseEnter={() => setSelectedTweetForDeletion(tweet.id)}
                   onMouseLeave={() => setSelectedTweetForDeletion(null)}>
                   <div className="flex items-start gap-3">
-                    <img
-                      src={`https://i.pravatar.cc/150?u=${tweet.displayName}`}
-                      alt="avatar"
-                      className="w-12 h-12 rounded-full"
-                    />
+                    <div className="shrink-0">
+                      <img
+                        src={`https://i.pravatar.cc/150?u=${tweet.displayName}`}
+                        alt="avatar"
+                        className="w-12 h-12 rounded-full"
+                      />
+                    </div>
                     <div className="w-full">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">

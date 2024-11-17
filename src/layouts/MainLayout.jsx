@@ -4,9 +4,12 @@ import LeftPanel from "../components/LeftPanel/LeftPanel";
 
 export default function MainLayout() {
   return (
-    <div className="flex container mx-auto">
+    <div className="flex lg:container mx-auto">
       <LeftPanel />
-      <Outlet />
+      {/* padding en bas pour la navbar mobile */}
+      <div className="pb-16 lg:pb-0 basis-full">
+        <Outlet />
+      </div>
       <RightPanel />
     </div>
   );

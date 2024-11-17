@@ -13,7 +13,15 @@ export default function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        try {
+          // Renouveler le token à chaque changement d'état d'authentification
+          await currentUser.getIdToken(true);
+        } catch (error) {
+          console.error("Token refresh failed:", error);
+        }
+      }
       setUser(currentUser);
       setLoading(false);
     });
@@ -48,7 +56,14 @@ export default function AuthProvider({ children }) {
     return updatedUser;
   };
 
-  const authContextValue = { user, loading, logOut, createUser, loginUser };
+  const authContextValue = {
+    user,
+    loading,
+    logOut,
+    createUser,
+    loginUser,
+    auth, // Exposer l'objet auth
+  };
 
   return <AuthContext.Provider value={authContextValue}>{children}</AuthContext.Provider>;
 }

@@ -96,6 +96,7 @@ export default function LeftPanel() {
     },
   ];
 
+  // Validation du tweet avant envoi
   const onBeforeSubmitHandler = (e) => {
     e.preventDefault();
     let isValid = true;
@@ -157,6 +158,7 @@ export default function LeftPanel() {
     }
   };
 
+  // Hook pour gérer la fermeture de la modale avec Échap
   useEffect(() => {
     if (modalIsOpen) {
       // Focus the textarea when the modal is opened
@@ -179,7 +181,7 @@ export default function LeftPanel() {
 
   return (
     <>
-      {/* Version desktop */}
+      {/* Navigation desktop */}
       <motion.div
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
@@ -192,15 +194,13 @@ export default function LeftPanel() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
               className="space-y-3">
-              <motion.li whileHover={{ scale: 1.1 }} className="flex items-center space-x-2">
+              <li className="flex items-center space-x-2">
                 <NavLink
                   to="/home"
                   className="flex items-center space-x-2 rounded-full p-3 hover:bg-slate-700">
                   <LogoX width="w-8" />
                 </NavLink>
-              </motion.li>
-
-              {/* Animer les items du menu */}
+              </li>
               {desktopNavItems.map((item, index) => (
                 <motion.div
                   key={item.to}
@@ -261,8 +261,6 @@ export default function LeftPanel() {
                     </motion.button>
                     <form onSubmit={(e) => onBeforeSubmitHandler(e)}>
                       <motion.textarea
-                        whileFocus={{ scale: 1.02 }}
-                        transition={{ type: "spring", stiffness: 300 }}
                         className="w-full p-2 mt-2 text-white rounded-lg border-none outline-none bg-transparent resize-none font-medium text-lg"
                         placeholder="Quoi de neuf ?!"
                         rows={4}
@@ -279,7 +277,7 @@ export default function LeftPanel() {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           type="submit"
-                          className="px-4 py-2 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white rounded-full font-bold mt-3">
+                          className="px-4 py-2 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white rounded-full font-bold mt-3 transition-colors duration-200">
                           Poster
                         </motion.button>
                       </div>
@@ -292,7 +290,7 @@ export default function LeftPanel() {
         </div>
       </motion.div>
 
-      {/* Version mobile */}
+      {/* Navigation mobile (barre du bas) */}
       <motion.div
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}

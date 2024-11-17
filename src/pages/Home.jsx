@@ -56,7 +56,7 @@ export default function Home() {
   }, [user, auth.currentUser]);
 
   const fetchTweets = async () => {
-    // Plus besoin de token pour les tweets car .read est public
+    // API publique, pas besoin de token pour la lecture
     const tweetsResponse = await fetch(
       `https://passerelle-x-default-rtdb.europe-west1.firebasedatabase.app/tweets.json`
     );
@@ -248,14 +248,13 @@ export default function Home() {
     return <Navigate to="/login" />;
   }
 
-  // Filtre les tweets en fonction de la recherche
+  // Filtre les tweets selon la recherche et le mode abonnements
   const filteredTweets = tweets?.filter((tweet) => {
     const searchLower = searchQuery.toLowerCase();
     const matchesSearch =
       tweet.content.toLowerCase().includes(searchLower) ||
       tweet.displayName.toLowerCase().includes(searchLower);
 
-    // N'afficher que les tweets qui ne sont pas des réponses
     const isNotReply = !tweet.replyTo;
 
     if (isMySubscriptions) {
@@ -300,44 +299,41 @@ export default function Home() {
             }`}>
             Abonnements
           </motion.button>
-          <div className="col-span-2 border-t border-slate-700 border-collapse">
-            <form className="flex items-start gap-3 p-4" onSubmit={onBeforeSubmitHandler}>
-              <NavLink to={`/${user.displayName}`} className="flex items-center ">
-                <img
-                  src={`https://i.pravatar.cc/150?u=${user.displayName}`}
-                  alt="avatar"
-                  className="w-12 h-12 rounded-full"></img>
-              </NavLink>
-              <div className="w-full">
-                <motion.textarea
-                  whileFocus={{ scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                  className="w-full mt-2 text-white rounded-lg border-none outline-none bg-transparent resize-none font-medium text-lg"
-                  placeholder="Quoi de neuf ?!"
-                  rows={2}
-                  ref={refTextArea}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      onBeforeSubmitHandler(e);
-                    }
-                  }}
-                />
-                <div className="flex justify-end border-t border-slate-700 border-collapse">
-                  <motion.button
-                    whileHover={{
-                      backgroundColor: "rgba(255, 255, 255, 0.03)",
-                      transition: { duration: 0.1 },
+          {!isMySubscriptions && (
+            <div className="col-span-2 border-t border-slate-700 border-collapse">
+              <form className="flex items-start gap-3 p-4" onSubmit={onBeforeSubmitHandler}>
+                <NavLink to={`/${user.displayName}`} className="flex items-center ">
+                  <img
+                    src={`https://i.pravatar.cc/150?u=${user.displayName}`}
+                    alt="avatar"
+                    className="w-12 h-12 rounded-full"></img>
+                </NavLink>
+                <div className="w-full">
+                  <motion.textarea
+                    className="w-full mt-2 text-white rounded-lg border-none outline-none bg-transparent resize-none font-medium text-lg"
+                    placeholder="Quoi de neuf ?!"
+                    rows={2}
+                    ref={refTextArea}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        onBeforeSubmitHandler(e);
+                      }
                     }}
-                    whileTap={{ scale: 0.95 }}
-                    type="submit"
-                    className="px-4 py-2 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white rounded-full font-bold mt-3">
-                    Poster
-                  </motion.button>
+                  />
+                  <div className="flex justify-end border-t border-slate-700 border-collapse">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="submit"
+                      className="px-4 py-2 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white rounded-full font-bold mt-3 transition-colors duration-200">
+                      Poster
+                    </motion.button>
+                  </div>
                 </div>
-              </div>
-            </form>
-          </div>
+              </form>
+            </div>
+          )}
         </>
       )}
 
@@ -369,7 +365,9 @@ export default function Home() {
                   <div className="w-full">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold">{selectedTweet.displayName}</span>
+                        <NavLink to={`/${selectedTweet.displayName}`}>
+                          <span className="font-bold">{selectedTweet.displayName}</span>
+                        </NavLink>
                         <span className="text-gray-500 text-sm">
                           {new Date(selectedTweet.date).toLocaleDateString()}
                         </span>
@@ -414,7 +412,7 @@ export default function Home() {
                       <div className="flex justify-end border-t border-slate-700 border-collapse">
                         <button
                           type="submit"
-                          className="px-4 py-2 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white rounded-full font-bold mt-3">
+                          className="px-4 py-2 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white rounded-full font-bold mt-3 transition-colors duration-200">
                           Répondre
                         </button>
                       </div>
@@ -441,7 +439,9 @@ export default function Home() {
                     <div className="w-full">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="font-bold">{reply.displayName}</span>
+                          <NavLink to={`/${reply.displayName}`}>
+                            <span className="font-bold">{reply.displayName}</span>
+                          </NavLink>
                           <span className="text-gray-500 text-sm">
                             {new Date(reply.date).toLocaleDateString()}
                           </span>
@@ -468,107 +468,126 @@ export default function Home() {
           </motion.div>
         ) : (
           <motion.div key="tweet-list" className="col-span-2">
-            {filteredTweets
-              ?.slice()
-              .reverse()
-              .map((tweet) => (
-                <motion.div
-                  key={tweet.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  whileHover={{
-                    backgroundColor: "rgba(255, 255, 255, 0.03)",
-                    transition: { duration: 0.1 },
-                  }}
-                  // Supprimer ces classes qui créent un conflit
-                  className="cursor-pointer border-solid border-y border-slate-700 border-collapse col-span-2 flex items-start gap-3 p-4"
-                  onClick={() => setSelectedTweet(tweet)}
-                  onMouseEnter={() => setSelectedTweetForDeletion(tweet.id)}
-                  onMouseLeave={() => setSelectedTweetForDeletion(null)}>
-                  <div className="shrink-0">
-                    <NavLink to={`/${tweet.displayName}`} className="w-12 h-12 rounded-full">
-                      <img
-                        src={`https://i.pravatar.cc/150?u=${tweet.displayName}`}
-                        alt="avatar"
-                        className="w-12 h-12 rounded-full"></img>
-                    </NavLink>
-                  </div>
-                  <div className="w-full">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold">{tweet.displayName}</span>
-                      <span className="text-gray-500 text-sm">
-                        {(() => {
-                          const posted = new Date(tweet.date);
-                          const now = new Date();
-                          const diff = Math.floor((now - posted) / 1000);
-                          if (diff < 30) return "à l'instant";
-                          if (diff < 60) return `${diff} sec`;
-                          if (diff < 3600) return `${Math.floor(diff / 60)} min`;
-                          if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
-                          // return date formatée
-                          return posted.toLocaleDateString("fr-FR", {
-                            day: "numeric",
-                            month: "short",
-                          });
-                        })()}
-                      </span>
+            {isMySubscriptions && (!subscriptions || subscriptions.length === 0) ? (
+              <div className="p-4 text-center text-gray-400">
+                <p>Vous n&apos;êtes abonné à aucun profil pour le moment.</p>
+                <p>Visitez des profils et abonnez-vous pour voir leurs tweets ici!</p>
+              </div>
+            ) : !filteredTweets || filteredTweets.length === 0 ? (
+              <div className="p-4 text-center text-gray-400">
+                <p>
+                  {searchQuery
+                    ? "Aucun tweet ne correspond à votre recherche."
+                    : "Aucun tweet n'a été publié pour le moment."}
+                </p>
+                {searchQuery && <p>Essayez avec d&apos;autres mots-clés!</p>}
+                {!searchQuery && <p>Soyez le premier à tweeter quelque chose!</p>}
+              </div>
+            ) : (
+              filteredTweets
+                ?.slice()
+                .reverse()
+                .map((tweet) => (
+                  <motion.div
+                    key={tweet.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    whileHover={{
+                      backgroundColor: "rgba(255, 255, 255, 0.03)",
+                      transition: { duration: 0.1 },
+                    }}
+                    // Supprimer ces classes qui créent un conflit
+                    className="cursor-pointer border-solid border-y border-slate-700 border-collapse col-span-2 flex items-start gap-3 p-4"
+                    onClick={() => setSelectedTweet(tweet)}
+                    onMouseEnter={() => setSelectedTweetForDeletion(tweet.id)}
+                    onMouseLeave={() => setSelectedTweetForDeletion(null)}>
+                    <div className="shrink-0">
+                      <NavLink to={`/${tweet.displayName}`} className="w-12 h-12 rounded-full">
+                        <img
+                          src={`https://i.pravatar.cc/150?u=${tweet.displayName}`}
+                          alt="avatar"
+                          className="w-12 h-12 rounded-full"></img>
+                      </NavLink>
                     </div>
-                    <p className="mt-2">{tweet.content}</p>
-                    <div className="flex items-center justify-between mt-2">
-                      <div className="flex items-center gap-1 text-gray-500 group">
-                        <div className="p-2 rounded-full group-hover:bg-[#1D9BF0] group-hover:bg-opacity-10">
-                          <ChatBubbleLeftIcon className="h-5 w-5 group-hover:text-[#1D9BF0]" />
-                        </div>
-                        <span className="text-sm group-hover:text-[#1D9BF0]">
-                          {getReplyCount(tweet.id)}
+                    <div className="w-full">
+                      <div className="flex items-center gap-2">
+                        <NavLink to={`/${tweet.displayName}`}>
+                          <span className="font-bold">{tweet.displayName}</span>
+                        </NavLink>
+                        <span className="text-gray-500 text-sm">
+                          {(() => {
+                            const posted = new Date(tweet.date);
+                            const now = new Date();
+                            const diff = Math.floor((now - posted) / 1000);
+                            if (diff < 30) return "à l'instant";
+                            if (diff < 60) return `${diff} sec`;
+                            if (diff < 3600) return `${Math.floor(diff / 60)} min`;
+                            if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
+                            // return date formatée
+                            return posted.toLocaleDateString("fr-FR", {
+                              day: "numeric",
+                              month: "short",
+                            });
+                          })()}
                         </span>
                       </div>
-                      {user &&
-                        user.uid === tweet.userId &&
-                        selectedTweetForDeletion === tweet.id && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteTweet(tweet.id);
-                            }}
-                            className="text-red-500 hover:text-red-700 text-sm">
-                            Supprimer
-                          </button>
-                        )}
-                    </div>
-                    {replyToTweet === tweet.id && (
-                      <form
-                        onSubmit={(e) => handleReply(e, tweet.id)}
-                        onClick={(e) => e.stopPropagation()}
-                        className="mt-2 border-t border-slate-700 pt-2">
-                        <textarea
-                          ref={replyTextRef}
-                          className="w-full bg-transparent text-white rounded p-2 border border-slate-700"
-                          placeholder="Votre réponse"
-                          rows={2}
-                        />
-                        <div className="flex justify-end gap-2 mt-2">
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setReplyToTweet(null);
-                            }}
-                            className="px-4 py-1 text-gray-400 hover:text-white">
-                            Annuler
-                          </button>
-                          <button
-                            type="submit"
-                            className="px-4 py-1 bg-blue-500 text-white rounded-full hover:bg-blue-600">
-                            Répondre
-                          </button>
+                      <p className="mt-2">{tweet.content}</p>
+                      <div className="flex items-center justify-between mt-2">
+                        <div className="flex items-center gap-1 text-gray-500 group">
+                          <div className="p-2 rounded-full group-hover:bg-[#1D9BF0] group-hover:bg-opacity-10">
+                            <ChatBubbleLeftIcon className="h-5 w-5 group-hover:text-[#1D9BF0]" />
+                          </div>
+                          <span className="text-sm group-hover:text-[#1D9BF0]">
+                            {getReplyCount(tweet.id)}
+                          </span>
                         </div>
-                      </form>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
+                        {user &&
+                          user.uid === tweet.userId &&
+                          selectedTweetForDeletion === tweet.id && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteTweet(tweet.id);
+                              }}
+                              className="text-red-500 hover:text-red-700 text-sm">
+                              Supprimer
+                            </button>
+                          )}
+                      </div>
+                      {replyToTweet === tweet.id && (
+                        <form
+                          onSubmit={(e) => handleReply(e, tweet.id)}
+                          onClick={(e) => e.stopPropagation()}
+                          className="mt-2 border-t border-slate-700 pt-2">
+                          <textarea
+                            ref={replyTextRef}
+                            className="w-full bg-transparent text-white rounded p-2 border border-slate-700"
+                            placeholder="Votre réponse"
+                            rows={2}
+                          />
+                          <div className="flex justify-end gap-2 mt-2">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setReplyToTweet(null);
+                              }}
+                              className="px-4 py-1 text-gray-400 hover:text-white">
+                              Annuler
+                            </button>
+                            <button
+                              type="submit"
+                              className="px-4 py-2 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white rounded-full font-bold transition-colors duration-200">
+                              Répondre
+                            </button>
+                          </div>
+                        </form>
+                      )}
+                    </div>
+                  </motion.div>
+                ))
+            )}
           </motion.div>
         )}
       </AnimatePresence>

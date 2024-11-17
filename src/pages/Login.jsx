@@ -170,7 +170,7 @@ export default function Login() {
                 autoFocus
                 className={`p-3 border ${
                   errors.displayName ? "border-red-500" : "border-gray-300"
-                } rounded h-10`}
+                } rounded h-10 outline-none focus:border-[#1D9BF0] focus:ring-1 focus:ring-[#1D9BF0]`}
                 {...register("displayName", {
                   required: "Le pseudo est requis",
                   minLength: {
@@ -202,7 +202,7 @@ export default function Login() {
                 placeholder="Adresse email"
                 className={`p-3 border ${
                   errors.email ? "border-red-500" : "border-gray-300"
-                } rounded h-10`}
+                } rounded h-10 outline-none focus:border-[#1D9BF0] focus:ring-1 focus:ring-[#1D9BF0]`}
                 {...register("email", {
                   required: "L'adresse email est requise",
                   pattern: {
@@ -226,7 +226,7 @@ export default function Login() {
                 placeholder="Mot de passe"
                 className={`p-3 border ${
                   errors.password ? "border-red-500" : "border-gray-300"
-                } rounded h-10`}
+                } rounded h-10 outline-none focus:border-[#1D9BF0] focus:ring-1 focus:ring-[#1D9BF0]`}
                 {...register("password", {
                   required: "Le mot de passe est requis",
                   minLength: {
@@ -255,7 +255,8 @@ export default function Login() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="p-2 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white rounded-full font-bold">
+                type="submit"
+                className="px-4 py-2 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white rounded-full font-bold transition-colors duration-200">
                 Créer un compte
               </motion.button>
               <div className="text-xs w-80 text-[#8B98A5]">
@@ -341,7 +342,7 @@ export default function Login() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-white bg-opacity-10 backdrop-blur-[1px]"
+              className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-[2px]"
               onClick={() => setLoginPopup(false)}
             />
             <motion.div
@@ -349,14 +350,15 @@ export default function Login() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: "spring", bounce: 0.3 }}
-              className="fixed inset-0 flex md:justify-center md:items-center"
+              className="fixed inset-0 flex items-center justify-center"
               onClick={(e) => e.stopPropagation()}>
               <motion.div
-                className="bg-[#15202B] p-4 md:p-8 rounded-lg md:rounded-2xl w-full md:w-auto md:max-w-md mx-auto mt-0 md:mt-auto"
-                initial={{ y: -100 }}
+                className="bg-[#15202B] p-8 py-12 rounded-2xl w-[600px] max-w-[90vw] mx-auto"
+                initial={{ y: -50 }}
                 animate={{ y: 0 }}
-                exit={{ y: -100 }}
+                exit={{ y: -50 }}
                 transition={{ type: "spring", damping: 20 }}>
+                {/* Le reste du contenu de la popup reste inchangé */}
                 <div className="text-center mb-8">
                   <motion.div
                     animate={{
@@ -378,9 +380,9 @@ export default function Login() {
                     placeholder="Adresse email"
                     autoFocus
                     ref={emailLoginRef}
-                    className={`p-4 md:p-3 bg-slate-100 border ${
+                    className={`p-4 md:p-3 bg-white border ${
                       errorsLogin.emailLogin ? "border-red-500" : "border-none"
-                    } rounded-lg h-12 md:h-10 text-base w-full`}
+                    } rounded-lg h-12 md:h-10 text-base w-full outline-none focus:border-[#1D9BF0] focus:ring-1 focus:ring-[#1D9BF0] text-black`}
                     {...registerLogin("emailLogin", {
                       required: "L'adresse email est requise",
                       pattern: {
@@ -403,9 +405,9 @@ export default function Login() {
                     type="password"
                     placeholder="Mot de passe"
                     ref={passwordLoginRef}
-                    className={`p-4 md:p-3 bg-slate-100 border ${
+                    className={`p-4 md:p-3 bg-white border ${
                       errorsLogin.passwordLogin ? "border-red-500" : "border-none"
-                    } rounded-lg h-12 md:h-10 text-base w-full`}
+                    } rounded-lg h-12 md:h-10 text-base w-full outline-none focus:border-[#1D9BF0] focus:ring-1 focus:ring-[#1D9BF0] text-black`}
                     {...registerLogin("passwordLogin", {
                       required: "Le mot de passe est requis",
                       minLength: {
@@ -426,7 +428,7 @@ export default function Login() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     type="submit"
-                    className="p-4 md:p-2 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white rounded-full font-bold text-lg w-full">
+                    className="px-4 py-2 bg-[#1D9BF0] hover:bg-[#1A8CD8] text-white rounded-full font-bold transition-colors duration-200">
                     Se connecter
                   </motion.button>
                   <motion.button

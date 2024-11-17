@@ -10,3 +10,13 @@ Header always set X-Content-Type-Options "nosniff"
 
 # Configuration des cookies
 Header always edit Set-Cookie (.*) "$1; SameSite=None; Secure"
+
+# Gestion du routage React
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /x/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-l
+    RewriteRule . /x/index.html [L]
+</IfModule>

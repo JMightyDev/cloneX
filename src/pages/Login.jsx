@@ -109,7 +109,7 @@ export default function Login() {
         animate={{ opacity: 1 }}
         className="flex items-center pt-20 flex-wrap justify-evenly h-screen">
         <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ duration: 0.5 }}>
-          <LogoX className="w-24 lg:w-96 max-sm:mb-5" />
+          <LogoX width="w-36 sm:w-48 md:w-64 lg:w-96" />
         </motion.div>
         <div className="flex items-center">
           <div className="flex flex-col items-center space-y-3 w-[450px]">

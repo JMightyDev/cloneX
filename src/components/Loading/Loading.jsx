@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 export default function Loading() {
   return (
-    <div className="h-screen w-screen flex justify-center items-center">
+    <div className="h-screen w-full basis-1/2 flex justify-center items-center">
       <motion.div
         animate={{
           rotate: 360,

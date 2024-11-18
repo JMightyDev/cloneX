@@ -122,7 +122,7 @@ REACT_APP_FIREBASE_APP_ID=your_app_id
 npm run dev
 ```
 
-Votre application devrait maintenant être accessible à l'adresse `http://localhost:3000`.
+Votre application devrait maintenant être accessible à l'adresse `http://localhost:5173`.
 
 ## ⚙️ Configuration
 

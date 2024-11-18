@@ -2,8 +2,9 @@
   "rules": {
     "tweets": {
       ".read": true,
-      ".write": "auth != null",
+      ".write": false,
       "$tweetId": {
+        ".write": "auth != null && (!data.exists() || data.child('userId').val() === auth.uid)",
         ".validate": "newData.hasChildren(['content', 'userId', 'displayName', 'date'])",
         "content": {
           ".validate": "newData.isString() && newData.val().length <= 280"
@@ -24,7 +25,7 @@
     },
     "subscriptions": {
       "$uid": {
-        ".read": "auth != null",
+        ".read": "auth != null && $uid === auth.uid",
         ".write": "auth != null && $uid === auth.uid",
         "$followedId": {
           ".validate": "newData.isString() && newData.val().length >= 3"

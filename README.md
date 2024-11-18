@@ -154,4 +154,8 @@ Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de 
 
 JMighty - [https://jmighty.fr](https://jmighty.fr) - [contact@jmighty.fr](mailto:contact@jmighty.fr)
 
-Lien du projet : [https://github.com/JMightyDev/projet-passerelle-x](https://github.com/JMightyDev/projet-passerelle-x)
+---
+
+<div align="center">
+Fait avec ❤️ par JMighty
+</div>

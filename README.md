@@ -3,10 +3,10 @@
 <div align="center">
 
 [![Demo](https://img.shields.io/badge/Demo-Live%20Site-blue)](https://jmighty.fr/x/)
-[![React](https://img.shields.io/badge/React-18-61dafb)]()
-[![Firebase](https://img.shields.io/badge/Firebase-Latest-orange)]()
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-Latest-38bdf8)]()
-[![License](https://img.shields.io/badge/License-MIT-green)]()
+[![React](https://img.shields.io/badge/React-18-61dafb)](https://react.dev/)
+[![Firebase](https://img.shields.io/badge/Firebase-Latest-orange)](https://firebase.google.com/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-Latest-38bdf8)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)
 
 Une réplique moderne et fonctionnelle de X (anciennement Twitter) avec authentification en temps réel et interface responsive.
 

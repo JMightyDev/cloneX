@@ -1,3 +1,6 @@
+<!-- markdownlint-disable MD033 -->
+<!-- markdownlint-disable MD029 -->
+
 # 🐦 Clone de X (Twitter)
 
 <div align="center">
@@ -91,22 +94,22 @@ Ce projet est un clone fonctionnel de X (Twitter) développé dans le cadre de l
 
 1. **Clonez le repository**
 
-```bash
+````bash
 git clone https://github.com/jmi/projet-passerelle-x.git
 cd projet-passerelle-x
-```
+```bash
 
 2. **Installez les dépendances**
 
 ```bash
 npm install
-```
+````
 
 3. **Configurez les variables d'environnement**
 
 Créez un fichier `.env` à la racine du projet et ajoutez les variables suivantes :
 
-```
+```bash
 REACT_APP_FIREBASE_API_KEY=your_api_key
 REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
 REACT_APP_FIREBASE_DATABASE_URL=your_database_url

@@ -152,6 +152,6 @@ Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de 
 
 ## 📞 Contact
 
-JMighty - [https://jmighty.fr](https://jmighty.fr) - [contact@jmighty.fr](contact@jmighty.fr)
+JMighty - [https://jmighty.fr](https://jmighty.fr) - [contact@jmighty.fr](mailto:contact@jmighty.fr)
 
 Lien du projet : [https://github.com/jmi/projet-passerelle-x](https://github.com/jmi/projet-passerelle-x)

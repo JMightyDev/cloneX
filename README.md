@@ -10,7 +10,7 @@
 
 Une réplique moderne et fonctionnelle de X (anciennement Twitter) avec authentification en temps réel et interface responsive.
 
-[Démo](https://jmighty.fr/x/) • [Signaler un Bug](https://github.com/jmi/projet-passerelle-x/issues) • [Suggérer une Feature](https://github.com/jmi/projet-passerelle-x/issues)
+[Démo](https://jmighty.fr/x/) • [Signaler un Bug](https://github.com/JMightyDev/projet-passerelle-x/issues) • [Suggérer une Feature](https://github.com/JMightyDev/projet-passerelle-x/issues)
 
 </div>
 

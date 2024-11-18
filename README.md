@@ -69,23 +69,23 @@ Ce projet est un clone fonctionnel de X (Twitter) développé dans le cadre de l
 
 ### Frontend
 
-- React 18 (avec Hooks)
-- TailwindCSS (pour le styling)
-- Framer Motion (pour les animations)
-- React Query (gestion du cache et des requêtes)
-- React Router v6 (navigation)
+- [React 18](https://react.dev/) (avec Hooks)
+- [TailwindCSS](https://tailwindcss.com/) (pour le styling)
+- [Framer Motion](https://www.framer.com/motion/) (pour les animations)
+- [React Query](https://tanstack.com/query/latest) (gestion du cache et des requêtes)
+- [React Router v6](https://reactrouter.com/) (navigation)
 
 ### Backend & Services
 
-- Firebase Authentication
-- Firebase Realtime Database
-- Vite (build tool)
+- [Firebase Authentication](https://firebase.google.com/products/auth)
+- [Firebase Realtime Database](https://firebase.google.com/products/realtime-database)
+- [Vite](https://vitejs.dev/) (build tool)
 
 ### Outils de Développement
 
-- ESLint
-- Prettier
-- Git
+- [ESLint](https://eslint.org/)
+- [Prettier](https://prettier.io/)
+- [Git](https://git-scm.com/)
 
 ## 📦 Installation
 
@@ -126,11 +126,19 @@ Votre application devrait maintenant être accessible à l'adresse `http://local
 
 ## ⚙️ Configuration
 
-Pour configurer ce projet, vous pouvez modifier les fichiers suivants :
+Pour configurer ce projet, vous aurez besoin de :
 
-- `src/firebaseConfig.js` : Contient la configuration Firebase.
-- `tailwind.config.js` : Contient la configuration TailwindCSS.
-- `src/components` : Contient les composants React.
+1. Un projet [Firebase](https://console.firebase.google.com/) avec :
+
+   - Authentication activée
+   - Realtime Database configurée
+   - Les règles de sécurité appropriées
+
+2. Les fichiers de configuration suivants :
+   - `.env` : Variables d'environnement (voir exemple ci-dessus)
+   - `vite.config.js` : Configuration de Vite
+   - `tailwind.config.js` : Configuration de TailwindCSS
+   - `src/config/firebase.js` : Configuration Firebase
 
 ## 🚀 Utilisation
 

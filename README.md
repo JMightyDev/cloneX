@@ -16,15 +16,15 @@ Une réplique moderne et fonctionnelle de X (anciennement Twitter) avec authenti
 
 ## 📋 Table des Matières
 
-- [Aperçu](#aperçu)
-- [Fonctionnalités](#fonctionnalités)
-- [Technologies](#technologies)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Utilisation](#utilisation)
-- [Contribution](#contribution)
-- [Licence](#licence)
-- [Contact](#contact)
+- [Aperçu](#-aperçu)
+- [Fonctionnalités](#-fonctionnalités)
+- [Technologies](#️-technologies)
+- [Installation](#-installation)
+- [Configuration](#️-configuration)
+- [Utilisation](#-utilisation)
+- [Contribution](#-contribution)
+- [Licence](#-licence)
+- [Contact](#-contact)
 
 ## 🔍 Aperçu
 

@@ -95,7 +95,7 @@ Ce projet est un clone fonctionnel de X (Twitter) développé dans le cadre de l
 1. **Clonez le repository**
 
 ```bash
-git clone https://github.com/jmi/projet-passerelle-x.git
+git clone https://github.com/JMightyDev/projet-passerelle-x.git
 cd projet-passerelle-x
 ```
 

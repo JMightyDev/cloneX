@@ -94,16 +94,16 @@ Ce projet est un clone fonctionnel de X (Twitter) développé dans le cadre de l
 
 1. **Clonez le repository**
 
-````bash
+```bash
 git clone https://github.com/jmi/projet-passerelle-x.git
 cd projet-passerelle-x
-```bash
+```
 
 2. **Installez les dépendances**
 
 ```bash
 npm install
-````
+```
 
 3. **Configurez les variables d'environnement**
 

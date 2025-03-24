@@ -187,6 +187,9 @@ export default function App() {
 		],
 		{
 			basename: "/x",
+			future: {
+				v7_startTransition: true,
+			},
 		}
 	);
 

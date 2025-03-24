@@ -19,15 +19,21 @@ Une réplique moderne et fonctionnelle de X (anciennement Twitter) avec authenti
 
 ## 📋 Table des Matières
 
-- [Aperçu](#-aperçu)
-- [Fonctionnalités](#-fonctionnalités)
-- [Technologies](#️-technologies)
-- [Installation](#-installation)
-- [Configuration](#️-configuration)
-- [Utilisation](#-utilisation)
-- [Contribution](#-contribution)
-- [Licence](#-licence)
-- [Contact](#-contact)
+- [🐦 Clone de X (Twitter)](#-clone-de-x-twitter)
+  - [📋 Table des Matières](#-table-des-matières)
+  - [🔍 Aperçu](#-aperçu)
+    - [🌟 Points Forts](#-points-forts)
+  - [✨ Fonctionnalités](#-fonctionnalités)
+  - [🛠️ Technologies](#️-technologies)
+    - [Frontend](#frontend)
+    - [Backend \& Services](#backend--services)
+    - [Outils de Développement](#outils-de-développement)
+  - [📦 Installation](#-installation)
+  - [⚙️ Configuration](#️-configuration)
+  - [🚀 Utilisation](#-utilisation)
+  - [🤝 Contribution](#-contribution)
+  - [📄 Licence](#-licence)
+  - [📞 Contact](#-contact)
 
 ## 🔍 Aperçu
 
@@ -107,16 +113,17 @@ npm install
 
 3. **Configurez les variables d'environnement**
 
-Créez un fichier `.env` à la racine du projet et ajoutez les variables suivantes :
+Créez un fichier `.env.local` à la racine du projet et ajoutez les variables suivantes (à adapter avec vos valeurs de firebase):
 
 ```bash
-REACT_APP_FIREBASE_API_KEY=your_api_key
-REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
-REACT_APP_FIREBASE_DATABASE_URL=your_database_url
-REACT_APP_FIREBASE_PROJECT_ID=your_project_id
-REACT_APP_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
-REACT_APP_FIREBASE_APP_ID=your_app_id
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_DATABASE_URL=your_database_url
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
 ```
 
 4. **Démarrez le serveur de développement**
@@ -138,7 +145,7 @@ Pour configurer ce projet, vous aurez besoin de :
    - Les règles de sécurité appropriées
 
 2. Les fichiers de configuration suivants :
-   - `.env` : Variables d'environnement (voir exemple ci-dessus)
+   - `.env.local` : Variables d'environnement (voir exemple ci-dessus)
    - `vite.config.js` : Configuration de Vite
    - `tailwind.config.js` : Configuration de TailwindCSS
    - `src/config/firebase.js` : Configuration Firebase
@@ -163,7 +170,7 @@ Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de 
 
 ## 📞 Contact
 
-JMighty - [https://jmighty.fr](https://jmighty.fr) - [contact@jmighty.fr](mailto:contact@jmighty.fr)
+JMighty - [https://jmighty.fr](https://jmighty.fr)
 
 ---
 

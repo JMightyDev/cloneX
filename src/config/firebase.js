@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics, isSupported } from "firebase/analytics";
-import { getAuth } from "firebase/auth";
+import { getAuth, connectAuthEmulator } from "firebase/auth";
 
 const firebaseConfig = {
 	apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -13,13 +13,35 @@ const firebaseConfig = {
 	measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+let app;
+let auth;
+let analytics;
 
-// Initialiser Analytics de manière conditionnelle pour éviter les erreurs CSP
-export const analytics = (async () => {
-	if (await isSupported()) {
-		return getAnalytics(app);
-	}
-	return null;
-})();
+try {
+	app = initializeApp(firebaseConfig);
+	auth = getAuth(app);
+
+	// Vérifier si toutes les variables d'environnement sont définies
+	Object.entries(firebaseConfig).forEach(([key, value]) => {
+		if (!value) {
+			console.error(`Configuration Firebase manquante : ${key}`);
+		}
+	});
+
+	// Initialiser Analytics de manière conditionnelle
+	analytics = (async () => {
+		try {
+			if (await isSupported()) {
+				return getAnalytics(app);
+			}
+		} catch (error) {
+			console.error("Erreur lors de l'initialisation d'Analytics:", error);
+		}
+		return null;
+	})();
+} catch (error) {
+	console.error("Erreur lors de l'initialisation de Firebase:", error);
+	throw error;
+}
+
+export { auth, analytics };

@@ -2,7 +2,24 @@
 	"rewrites": [
 		{
 			"source": "/x/:path*",
-			"destination": "/x/index.html"
+			"destination": "/index.html"
+		},
+		{
+			"source": "/x",
+			"destination": "/index.html"
+		}
+	],
+	"routes": [
+		{
+			"handle": "filesystem"
+		},
+		{
+			"src": "/x/assets/(.*)",
+			"dest": "/assets/$1"
+		},
+		{
+			"src": "/x/(.*)",
+			"dest": "/index.html"
 		}
 	]
 }

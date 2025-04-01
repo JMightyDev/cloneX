@@ -49,13 +49,13 @@ export default function App() {
 						element: (
 							<Suspense fallback={<Loading />}>
 								<ProtectedRoute>
-									<Navigate to="/home" />
+									<Navigate to="home" replace />
 								</ProtectedRoute>
 							</Suspense>
 						),
 					},
 					{
-						path: "/home",
+						path: "home",
 						element: (
 							<Suspense fallback={<Loading />}>
 								<ProtectedRoute>
@@ -65,7 +65,7 @@ export default function App() {
 						),
 					},
 					{
-						path: "/explore",
+						path: "explore",
 						element: (
 							<Suspense fallback={<Loading />}>
 								<ProtectedRoute>
@@ -75,7 +75,7 @@ export default function App() {
 						),
 					},
 					{
-						path: "/notifications",
+						path: "notifications",
 						element: (
 							<Suspense fallback={<Loading />}>
 								<ProtectedRoute>
@@ -85,7 +85,7 @@ export default function App() {
 						),
 					},
 					{
-						path: "/messages",
+						path: "messages",
 						element: (
 							<Suspense fallback={<Loading />}>
 								<ProtectedRoute>
@@ -95,7 +95,7 @@ export default function App() {
 						),
 					},
 					{
-						path: "/lists",
+						path: "lists",
 						element: (
 							<Suspense fallback={<Loading />}>
 								<ProtectedRoute>
@@ -105,7 +105,7 @@ export default function App() {
 						),
 					},
 					{
-						path: "/bookmarks",
+						path: "bookmarks",
 						element: (
 							<Suspense fallback={<Loading />}>
 								<ProtectedRoute>
@@ -115,7 +115,7 @@ export default function App() {
 						),
 					},
 					{
-						path: "/jobs",
+						path: "jobs",
 						element: (
 							<Suspense fallback={<Loading />}>
 								<ProtectedRoute>
@@ -125,7 +125,7 @@ export default function App() {
 						),
 					},
 					{
-						path: "/communities",
+						path: "communities",
 						element: (
 							<Suspense fallback={<Loading />}>
 								<ProtectedRoute>
@@ -135,7 +135,7 @@ export default function App() {
 						),
 					},
 					{
-						path: "/premium",
+						path: "premium",
 						element: (
 							<Suspense fallback={<Loading />}>
 								<ProtectedRoute>
@@ -145,7 +145,7 @@ export default function App() {
 						),
 					},
 					{
-						path: "/verifiedOrgs",
+						path: "verifiedOrgs",
 						element: (
 							<Suspense fallback={<Loading />}>
 								<ProtectedRoute>
@@ -155,7 +155,7 @@ export default function App() {
 						),
 					},
 					{
-						path: "/:displayName",
+						path: ":displayName",
 						element: (
 							<Suspense fallback={<Loading />}>
 								<ProtectedRoute>
@@ -165,7 +165,7 @@ export default function App() {
 						),
 					},
 					{
-						path: "/more",
+						path: "more",
 						element: (
 							<Suspense fallback={<Loading />}>
 								<ProtectedRoute>
@@ -177,7 +177,7 @@ export default function App() {
 				],
 			},
 			{
-				path: "/login",
+				path: "login",
 				element: (
 					<Suspense fallback={<Loading />}>
 						<Login />
@@ -195,13 +195,21 @@ export default function App() {
 
 	return (
 		<>
-			<ToastContainer theme="dark" position="bottom-right" />
+			<ToastContainer
+				theme="dark"
+				position="bottom-right"
+				// Ajout de configurations recommandées pour éviter les problèmes de z-index
+				style={{ zIndex: 9999 }}
+				// Amélioration de l'accessibilité
+				role="alert"
+				aria-live="polite"
+			/>
 			<QueryClientProvider client={queryClient}>
 				<SearchProvider>
 					<RouterProvider router={router} />
 				</SearchProvider>
 			</QueryClientProvider>
-			<Analytics />
+			<Analytics mode="production" debug={false} />
 		</>
 	);
 }

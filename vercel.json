@@ -1,13 +1,13 @@
 {
 	"rewrites": [
 		{
-			"source": "/:path*",
+			"source": "/(.*)",
 			"destination": "/index.html"
 		}
 	],
 	"headers": [
 		{
-			"source": "/(.*)",
+			"source": "/index.html",
 			"headers": [
 				{
 					"key": "Cache-Control",

@@ -32,5 +32,7 @@
 				}
 			]
 		}
-	]
+	],
+	"cleanUrls": true,
+	"trailingSlash": false
 }

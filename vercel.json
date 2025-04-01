@@ -7,19 +7,10 @@
 		{
 			"source": "/x",
 			"destination": "/index.html"
-		}
-	],
-	"routes": [
-		{
-			"handle": "filesystem"
 		},
 		{
-			"src": "/x/assets/(.*)",
-			"dest": "/assets/$1"
-		},
-		{
-			"src": "/x/(.*)",
-			"dest": "/index.html"
+			"source": "/x/assets/:path*",
+			"destination": "/assets/:path*"
 		}
 	],
 	"headers": [

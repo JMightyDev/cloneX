@@ -189,6 +189,7 @@ export default function App() {
 			basename: "/x",
 			future: {
 				v7_startTransition: true,
+				v7_relativeSplatPath: true,
 			},
 		}
 	);
@@ -198,18 +199,22 @@ export default function App() {
 			<ToastContainer
 				theme="dark"
 				position="bottom-right"
-				// Ajout de configurations recommandées pour éviter les problèmes de z-index
 				style={{ zIndex: 9999 }}
-				// Amélioration de l'accessibilité
 				role="alert"
 				aria-live="polite"
 			/>
 			<QueryClientProvider client={queryClient}>
 				<SearchProvider>
-					<RouterProvider router={router} />
+					<RouterProvider
+						router={router}
+						future={{
+							v7_startTransition: true,
+							v7_relativeSplatPath: true,
+						}}
+					/>
 				</SearchProvider>
 			</QueryClientProvider>
-			<Analytics mode="production" debug={false} />
+			{import.meta.env.PROD && <Analytics mode="production" debug={false} />}
 		</>
 	);
 }

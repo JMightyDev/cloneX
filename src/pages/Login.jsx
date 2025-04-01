@@ -92,41 +92,36 @@ export default function Login() {
 		if (loading) return;
 		setLoading(true);
 
-		loginUser(data.emailLogin, data.passwordLogin)
-			.then(() => {
-				setLoading(false);
-				toast.success(`Enfin de retour ${getAuth().currentUser.displayName}!`);
-			})
-			.catch((error) => {
-				setLoading(false);
-				const { code, message } = error;
-				if (code === "auth/user-not-found") {
-					toast.error("Aucun utilisateur trouvé avec cette adresse e-mail.");
-					return;
-				} else if (code === "auth/wrong-password") {
-					toast.error("Le mot de passe est incorrect.");
-					return;
-				} else if (code === "auth/invalid-credential") {
-					toast.error(
-						"Les informations d'identification fournies sont incorrectes."
-					);
-					return;
-				} else if (code === "auth/too-many-requests") {
-					toast.error("Trop de tentatives. Réessayez plus tard.");
-					return;
-				} else if (code === "auth/user-disabled") {
-					toast.error("Cet utilisateur a été désactivé.");
-					return;
-				} else if (code === "auth/invalid-email") {
-					toast.error("Adresse e-mail invalide.");
-					return;
-				} else if (code === "auth/weak-password") {
-					toast.error("Le mot de passe doit contenir au moins 6 caractères.");
-					return;
-				} else {
-					toast.error(message);
-				}
-			});
+		try {
+			const userCredential = await loginUser(
+				data.emailLogin,
+				data.passwordLogin
+			);
+			setLoading(false);
+			toast.success(`Enfin de retour ${getAuth().currentUser.displayName}!`);
+		} catch (error) {
+			setLoading(false);
+			const { code, message } = error;
+			if (code === "auth/user-not-found") {
+				toast.error("Aucun utilisateur trouvé avec cette adresse e-mail.");
+			} else if (code === "auth/wrong-password") {
+				toast.error("Le mot de passe est incorrect.");
+			} else if (code === "auth/invalid-credential") {
+				toast.error(
+					"Les informations d'identification fournies sont incorrectes."
+				);
+			} else if (code === "auth/too-many-requests") {
+				toast.error("Trop de tentatives. Réessayez plus tard.");
+			} else if (code === "auth/user-disabled") {
+				toast.error("Cet utilisateur a été désactivé.");
+			} else if (code === "auth/invalid-email") {
+				toast.error("Adresse e-mail invalide.");
+			} else if (code === "auth/weak-password") {
+				toast.error("Le mot de passe doit contenir au moins 6 caractères.");
+			} else {
+				toast.error(`Erreur de connexion: ${message}`);
+			}
+		}
 	};
 
 	if (user) {

@@ -2,24 +2,20 @@
 	"rewrites": [
 		{
 			"source": "/x/:path*",
-			"destination": "/index.html"
-		},
-		{
-			"source": "/x",
-			"destination": "/index.html"
+			"destination": "/x/index.html"
 		},
 		{
 			"source": "/x/assets/:path*",
-			"destination": "/assets/:path*"
+			"destination": "/x/assets/:path*"
 		}
 	],
 	"headers": [
 		{
-			"source": "/x/(.*)",
+			"source": "/x/:path*",
 			"headers": [
 				{
 					"key": "Cache-Control",
-					"value": "public, max-age=0, must-revalidate"
+					"value": "no-cache, no-store, must-revalidate"
 				}
 			]
 		}

@@ -1,17 +1,17 @@
 {
 	"rewrites": [
 		{
-			"source": "/x/assets/:path*",
+			"source": "/assets/:path*",
 			"destination": "/assets/:path*"
 		},
 		{
-			"source": "/x/:path*",
+			"source": "/:path*",
 			"destination": "/:path*"
 		}
 	],
 	"headers": [
 		{
-			"source": "/x/assets/:path*",
+			"source": "/assets/:path*",
 			"headers": [
 				{
 					"key": "Cache-Control",
@@ -20,7 +20,7 @@
 			]
 		},
 		{
-			"source": "/x/:path*",
+			"source": "/:path*",
 			"headers": [
 				{
 					"key": "Cache-Control",

@@ -1,12 +1,32 @@
 {
 	"rewrites": [
 		{
-			"source": "/x",
-			"destination": "/"
+			"source": "/x/assets/:path*",
+			"destination": "/assets/:path*"
 		},
 		{
 			"source": "/x/:path*",
 			"destination": "/:path*"
+		}
+	],
+	"headers": [
+		{
+			"source": "/x/assets/:path*",
+			"headers": [
+				{
+					"key": "Cache-Control",
+					"value": "public, max-age=31536000, immutable"
+				}
+			]
+		},
+		{
+			"source": "/x/:path*",
+			"headers": [
+				{
+					"key": "Cache-Control",
+					"value": "no-cache, no-store, must-revalidate"
+				}
+			]
 		}
 	],
 	"cleanUrls": true,
